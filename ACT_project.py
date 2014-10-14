@@ -26,11 +26,11 @@ from functions import *
 #   arg4 => liste de mots à traduire                                                                     #
 #                                                                                                        #
 ##########################################################################################################
-# ./ACT_project.py
-#   Corpus/termer_source.lem
-#   Corpus/termer_target.lem
-#   Dictionary/dicfrenelda-utf8.txt
-#   Other_src/test_list.txt #
+# ./ACT_project.py                                                                                       #
+#   Corpus/termer_source.lem                                                                             #
+#   Corpus/termer_target.lem                                                                             #
+#   Dictionary/dicfrenelda-utf8.txt                                                                      #
+#   Other_src/test_list.txt                                                                              #
 ##########################################################################################################
 
 
@@ -60,9 +60,9 @@ if __name__ == "__main__":
     ###############################
     #   Variables de traitement   #
     ###############################
-    # True = corpus déjà traité
+    # True = document déjà traité
     french_corpus_clean = True
-    english_corpus_clean = False
+    english_corpus_clean = True
     dictionary_clean = False
     list_clean = False
 
@@ -123,15 +123,31 @@ if __name__ == "__main__":
 
     # nettoyage du corpus français
     if french_corpus_clean == False:
+        affichage(1)
         corpus_source_lst = cleaning_french_corpus(corpus_source_lst)
         for element in corpus_source_lst:
             file_cleaning_french_corpus.write(element + " \n")
+        affichage(0)
     else:
+        affichage(2)
         for element in corpus_source_lst:
             if isAWord(element) == 0:
                 corpus_source_lst.remove(element)
+        affichage(0)
 
     # nettoyage du corpus anglais
+    if english_corpus_clean == False:
+        affichage(3)
+        corpus_target_lst = cleaning_english_corpus(corpus_target_lst)
+        for element in corpus_target_lst:
+            file_cleaning_english_corpus.write(element + " \n")
+        affichage(0)
+    else:
+        affichage(4)
+        for element in corpus_target_lst:
+            if isAWord(element) == 0:
+                corpus_target_lst.remove(element)
+        affichage(0)
     # nettoyage du dictionnaire
     # nettoyage de la liste
 
@@ -151,4 +167,4 @@ if __name__ == "__main__":
     file_dictionary.close()
     file_word_list.close()
 
-    print("fin du code")
+    print(color.RED + "\n\n\nfin du programme\n\n\n" + color.END)

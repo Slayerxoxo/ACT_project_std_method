@@ -14,13 +14,14 @@ import os
 import codecs
 
 
-###############################
+# ##############################
 #    Nettoyage des sources    #
 ###############################
 
+
 ###    removeAccent    ###
     #    enlève les accents d'une chaîne
-def removeAccent (string):
+def removeAccent(string):
     string = re.sub(u"[éèëê]", u"e", string)
     string = re.sub(u"[ïî]", u"i", string)
     string = re.sub(u"[àâä]", u"a", string)
@@ -30,11 +31,12 @@ def removeAccent (string):
     string = re.sub(u"[œ]", u"oe", string)
     return string
 
+
 ###    isAWord    ###
     #    test si une chaine est un mot syntaxiquement français
-def isAWord (string):
+def isAWord(string):
     ponctuation_lst = [u".", u",", u"?", u";", u":", u"!", u"<", u">", u"\"", u"-", u"\'", u"«", u"»"]
-    symbol_lst = [u"#", u"%", u"+",u"=", u"/", u"(", u")", u"[", u"]"]
+    symbol_lst = [u"#", u"%", u"+", u"=", u"/", u"(", u")", u"[", u"]"]
     number_lst = [u"1", u"2", u"3", u"4", u"5", u"6", u"7", u"8", u"9", u"0"]
     badWord_lst = [u"__endfile", u"__ENDFILE", u"__file"]
     empty_lst = [u"\r\n", u"\n", u" "]
@@ -64,15 +66,17 @@ def isAWord (string):
     #    suppression des mots syntaxiquement inintéressant
     #    comptage des mots gardés
     #    suppression des happax
-def cleaning_french_corpus (corpus_lst):
+
+
+def cleaning_french_corpus(corpus_lst):
     new_lst = []
     tmp_dict = {}
     for element in corpus_lst:
-        element = element.split("/")[-1].split(":")[0]	# on récupère le dernier élément avant le "/" et avant un ":"
+        element = element.split("/")[-1].split(":")[0]  # on récupère le dernier élément avant le "/" et avant un ":"
         element = removeAccent(element)
         if isAWord(element) == 1:
             if not element.lower() in tmp_dict.keys():
-                tmp_dict[element.lower()]=1
+                tmp_dict[element.lower()] = 1
             else:
                 tmp_dict[element.lower()] += 1
     for element in tmp_dict:
@@ -83,7 +87,55 @@ def cleaning_french_corpus (corpus_lst):
 
 ###    cleaning_english_corpus    ###
     #    récupération du mot seul
-        #    suppression des mots syntaxiquement inintéressant
-def cleaning_english_corpus (corpus_lst):
-
+    #    suppression des mots syntaxiquement inintéressant
+def cleaning_english_corpus(corpus_lst):
+    new_lst = []
+    tmp_dict = {}
+    for element in corpus_lst:
+        element = element.split("/")[-2]
+        if isAWord(element) == 1:
+            if not element.lower() in tmp_dict.keys():
+                tmp_dict[element.lower()] = 1
+            else:
+                tmp_dict[element.lower()] += 1
+    for element in tmp_dict:
+        if tmp_dict[element] >= 2:
+            new_lst.append(element)
     return new_lst
+
+
+###############################
+#     Organistion du code     #
+###############################
+
+
+###    color    ###
+    #    mise en forme du texte
+class color:
+    PURPLE = '\033[95m'
+    CYAN = '\033[96m'
+    DARKCYAN = '\033[36m'
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    END = '\033[0m'
+
+
+###    affichage    ###
+    #    affiche dans la console des textes sur l'exécution du programme
+def affichage(num):
+    if num == 444:
+        print(color.RED + "\nERREUR" + color.END)
+    elif num == 0:
+        print("                                 " + color.GREEN + " > done" + color.END)
+    elif num == 1:
+        print(color.BOLD + "\n\nNETTOYAGE DU CORPUS FRANCAIS :" + color.END)
+    elif num == 2:
+        print(color.BOLD + "\n\nRECUPERATION DU CORPUS FRANCAIS :" + color.END)
+    elif num == 3:
+        print(color.BOLD + "\n\nNETTOYAGE DU CORPUS ANGLAIS :" + color.END)
+    elif num == 4:
+        print(color.BOLD + "\n\nRECUPERATION DU CORPUS ANGLAIS :" + color.END)
