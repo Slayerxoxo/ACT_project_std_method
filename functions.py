@@ -35,7 +35,7 @@ def removeAccent(string):
 ###    isAWord    ###
     #    test si une chaine est un mot syntaxiquement français
 def isAWord(string):
-    ponctuation_lst = [u".", u",", u"?", u";", u":", u"!", u"<", u">", u"\"", u"-", u"\'", u"«", u"»"]
+    ponctuation_lst = [u",", u"?", u";", u":", u"!", u"<", u">", u"\"", u"-", u"\'", u"«", u"»"]
     symbol_lst = [u"#", u"%", u"+", u"=", u"/", u"(", u")", u"[", u"]"]
     number_lst = [u"1", u"2", u"3", u"4", u"5", u"6", u"7", u"8", u"9", u"0"]
     badWord_lst = [u"__endfile", u"__ENDFILE", u"__file"]
@@ -70,16 +70,19 @@ def isAWord(string):
 
 def cleaning_french_corpus(corpus_lst):
     new_lst = []
+    tmp_lst = []
     tmp_dict = {}
     for element in corpus_lst:
-        element = element.split("/")[-1].split(":")[0]  # on récupère le dernier élément avant le "/" et avant un ":"
+        element = element.split("/")[-1].split(":")[0]
         element = removeAccent(element)
+        element = element.lower()
         if isAWord(element) == 1:
-            if not element.lower() in tmp_dict.keys():
-                tmp_dict[element.lower()] = 1
+            tmp_lst.append(element)
+            if not element in tmp_dict.keys():
+                tmp_dict[element] = 1
             else:
-                tmp_dict[element.lower()] += 1
-    for element in tmp_dict:
+                tmp_dict[element] += 1
+    for element in tmp_lst:
         if tmp_dict[element] >= 2:
             new_lst.append(element)
     return new_lst
@@ -90,15 +93,18 @@ def cleaning_french_corpus(corpus_lst):
     #    suppression des mots syntaxiquement inintéressant
 def cleaning_english_corpus(corpus_lst):
     new_lst = []
+    tmp_lst = []
     tmp_dict = {}
     for element in corpus_lst:
         element = element.split("/")[-2]
+        element = element.lower()
         if isAWord(element) == 1:
-            if not element.lower() in tmp_dict.keys():
-                tmp_dict[element.lower()] = 1
+            tmp_lst.append(element)
+            if not element in tmp_dict.keys():
+                tmp_dict[element] = 1
             else:
-                tmp_dict[element.lower()] += 1
-    for element in tmp_dict:
+                tmp_dict[element] += 1
+    for element in tmp_lst:
         if tmp_dict[element] >= 2:
             new_lst.append(element)
     return new_lst
