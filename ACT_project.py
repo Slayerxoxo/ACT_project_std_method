@@ -93,28 +93,25 @@ if __name__ == "__main__":
         corpus_target_txt = file_cleaning_english_corpus.read()
         corpus_target_lst = corpus_target_txt.split(" ")
 
+    if dictionary_clean == False:
+        file_dictionary = codecs.open(sys.argv[3], "r", "utf-8")
+        file_cleaning_dictionnary = codecs.open("Results/dictionary", "w", "utf-8")
+        dictionary_txt = file_dictionary.read()
+        dictionary_lst = dictionary_txt.split(";")
+    else:
+        file_cleaning_dictionnary = codecs.open("Results/dictionary", "r", "utf-8")
+        dictionary_txt = file_cleaning_dictionnary.read()
+        dictionary_lst = dictionary_txt.split(";")
 
-
-    # ouverture des fichiers sources
-
-    file_dictionary = codecs.open(sys.argv[3], "r", "utf-8")
-    file_word_list = codecs.open(sys.argv[4], "r", "utf-8")
-
-    # ouverture des fichiers résultats
-
-    file_cleaning_dictionnary = codecs.open("Results/dictionary", "w", "utf-8")
-    file_cleaning_list = codecs.open("Results/list", "w", "utf-8")
-
-    # lecture de l'intégralité des fichiers
-
-    dictionary_txt = file_dictionary.read()
-    word_list_txt = file_word_list.read()
-
-    # construction des listes sources
-
-    dictionary_lst = dictionary_txt.split(" ")
-    word_list_lst = word_list_txt.split(" ")
-
+    if list_clean == False:
+        file_word_list = codecs.open(sys.argv[4], "r", "utf-8")
+        file_cleaning_list = codecs.open("Results/list", "w", "utf-8")
+        word_list_txt = file_word_list.read()
+        word_list_lst = word_list_txt.split(" ")
+    else:
+        file_cleaning_list = codecs.open("Results/list", "r", "utf-8")
+        word_list_txt = file_cleaning_list.read()
+        word_list_lst = word_list_txt.split(" ")
 
 
     ###############################
@@ -148,7 +145,14 @@ if __name__ == "__main__":
             if isAWord(element) == 0:
                 corpus_target_lst.remove(element)
         affichage(0)
+
     # nettoyage du dictionnaire
+    affichage(5)
+    dictionary_lst = cleaning_dictionnary(dictionary_lst, dictionary_clean)
+    if dictionary_clean == False:
+        for (element1,element2) in dictionary_lst:
+            file_cleaning_dictionnary.write(element1 + ";" + element2 + ";\n")
+    affichage(0)
     # nettoyage de la liste
 
 
@@ -167,4 +171,4 @@ if __name__ == "__main__":
     file_dictionary.close()
     file_word_list.close()
 
-    print(color.RED + "\n\n\nfin du programme\n\n\n" + color.END)
+    print(color.BLUE + "\n\n\nfin du programme\n\n\n" + color.END)

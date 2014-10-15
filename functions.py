@@ -62,9 +62,8 @@ def isAWord(string):
 
 ###    cleaning_french_corpus    ###
     #    récupération du mot seul
-    #    suppression des accents
+    #    suppression des accents et majuscules
     #    suppression des mots syntaxiquement inintéressant
-    #    comptage des mots gardés
     #    suppression des happax
 
 
@@ -90,7 +89,9 @@ def cleaning_french_corpus(corpus_lst):
 
 ###    cleaning_english_corpus    ###
     #    récupération du mot seul
+    #    suppression des accents et majuscules
     #    suppression des mots syntaxiquement inintéressant
+    #    élimination des happax
 def cleaning_english_corpus(corpus_lst):
     new_lst = []
     tmp_lst = []
@@ -107,6 +108,35 @@ def cleaning_english_corpus(corpus_lst):
     for element in tmp_lst:
         if tmp_dict[element] >= 2:
             new_lst.append(element)
+    return new_lst
+
+
+###    cleaning_dictionnary    ###
+    #    récupération des deux mots
+def cleaning_dictionnary(corpus_lst, bool_var):
+    new_lst = []
+    tmp_var = 1
+    tmp_word = ""
+    if bool_var == False:
+        for element in corpus_lst:
+            if tmp_var == 1:
+                tmp_word = element
+                tmp_var += 1
+            elif tmp_var == 4:
+                new_lst.append((tmp_word,element))
+                tmp_var += 1
+            elif tmp_var == 5:
+                tmp_var = 1
+            else:
+                tmp_var += 1
+    else:
+        for element in corpus_lst:
+            if tmp_var == 1:
+                tmp_word = element
+                tmp_var += 1
+            else:
+                new_lst.append((tmp_word,element))
+                tmp_var -= 1
     return new_lst
 
 
@@ -145,3 +175,5 @@ def affichage(num):
         print(color.BOLD + "\n\nNETTOYAGE DU CORPUS ANGLAIS :" + color.END)
     elif num == 4:
         print(color.BOLD + "\n\nRECUPERATION DU CORPUS ANGLAIS :" + color.END)
+    elif num == 5:
+        print(color.BOLD + "\n\nRECUPERATION DU DICTIONNAIRE :" + color.END)
