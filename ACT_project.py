@@ -12,6 +12,7 @@
 import sys
 import os
 import codecs
+import re
 
 from functions import *
 
@@ -32,7 +33,7 @@ from functions import *
 #   Dictionary/dicfrenelda-utf8.txt                                                                      #
 #   Other_src/test_list.txt                                                                              #
 ##########################################################################################################
-
+# resultat top 10  40%
 
 if __name__ == "__main__":
     if len(sys.argv) > 4:
@@ -63,8 +64,7 @@ if __name__ == "__main__":
     # True = document déjà traité
     french_corpus_clean = True
     english_corpus_clean = True
-    dictionary_clean = False
-    list_clean = False
+    dictionary_clean = True
 
 
     ###############################
@@ -79,8 +79,7 @@ if __name__ == "__main__":
         file_corpus_source.close()
     else:
         file_cleaning_french_corpus = codecs.open("Results/french_corpus", "r", "utf-8")
-        corpus_source_txt = file_cleaning_french_corpus.read()
-        corpus_source_lst = corpus_source_txt.split(" ")
+        corpus_source_lst = []
 
     if english_corpus_clean == False:
         file_corpus_target = codecs.open(sys.argv[2], "r", "utf-8")
@@ -90,28 +89,32 @@ if __name__ == "__main__":
         file_corpus_target.close()
     else:
         file_cleaning_english_corpus = codecs.open("Results/english_corpus", "r", "utf-8")
-        corpus_target_txt = file_cleaning_english_corpus.read()
-        corpus_target_lst = corpus_target_txt.split(" ")
+        corpus_target_lst = []
 
     if dictionary_clean == False:
         file_dictionary = codecs.open(sys.argv[3], "r", "utf-8")
         file_cleaning_dictionnary = codecs.open("Results/dictionary", "w", "utf-8")
-        dictionary_txt = file_dictionary.read()
-        dictionary_lst = dictionary_txt.split(";")
+        dictionary_txt = []
+        for lines in file_dictionary.readlines():
+            dictionary_txt.append(lines)
+        file_dictionary.close()
     else:
         file_cleaning_dictionnary = codecs.open("Results/dictionary", "r", "utf-8")
-        dictionary_txt = file_cleaning_dictionnary.read()
-        dictionary_lst = dictionary_txt.split(";")
+        dictionary_lst = []
 
-    if list_clean == False:
-        file_word_list = codecs.open(sys.argv[4], "r", "utf-8")
-        file_cleaning_list = codecs.open("Results/list", "w", "utf-8")
-        word_list_txt = file_word_list.read()
-        word_list_lst = word_list_txt.split(" ")
-    else:
-        file_cleaning_list = codecs.open("Results/list", "r", "utf-8")
-        word_list_txt = file_cleaning_list.read()
-        word_list_lst = word_list_txt.split(" ")
+    file_words_list = codecs.open(sys.argv[4], "r", "utf-8")
+    word_list_txt = []
+    for lines in file_words_list.readlines():
+            word_list_txt.append(lines)
+    file_words_list.close()
+
+    file_french_stopwords = codecs.open("Other_src/french_stopwords.lst", "r", "utf-8")
+    french_stopwords_lst = file_french_stopwords.read()
+    file_french_stopwords.close()
+
+    file_english_stopwords = codecs.open("Other_src/english_stopwords.lst", "r", "utf-8")
+    english_stopwords_lst = file_english_stopwords.read()
+    file_english_stopwords.close()
 
 
     ###############################
@@ -121,40 +124,66 @@ if __name__ == "__main__":
     # nettoyage du corpus français
     if french_corpus_clean == False:
         affichage(1)
-        corpus_source_lst = cleaning_french_corpus(corpus_source_lst)
+        corpus_source_lst = cleaning_french_corpus(corpus_source_lst, french_stopwords_lst)
         for element in corpus_source_lst:
-            file_cleaning_french_corpus.write(element + " \n")
-        affichage(0)
+            file_cleaning_french_corpus.write(element + "\n")
     else:
         affichage(2)
-        for element in corpus_source_lst:
-            if isAWord(element) == 0:
-                corpus_source_lst.remove(element)
-        affichage(0)
+        for lines in file_cleaning_french_corpus.readlines():
+            corpus_source_lst.append(lines.rstrip("\n"))
+    affichage(0)
 
     # nettoyage du corpus anglais
     if english_corpus_clean == False:
         affichage(3)
-        corpus_target_lst = cleaning_english_corpus(corpus_target_lst)
+        corpus_target_lst = cleaning_english_corpus(corpus_target_lst, english_stopwords_lst)
         for element in corpus_target_lst:
-            file_cleaning_english_corpus.write(element + " \n")
-        affichage(0)
+            file_cleaning_english_corpus.write(element + "\n")
     else:
         affichage(4)
-        for element in corpus_target_lst:
-            if isAWord(element) == 0:
-                corpus_target_lst.remove(element)
-        affichage(0)
+        for lines in file_cleaning_english_corpus.readlines():
+            corpus_target_lst.append(lines.rstrip("\n"))
+    affichage(0)
 
     # nettoyage du dictionnaire
-    affichage(5)
-    dictionary_lst = cleaning_dictionnary(dictionary_lst, dictionary_clean)
     if dictionary_clean == False:
+        affichage(5)
+        dictionary_lst = []
+        for lines in dictionary_txt:
+            dictionary_lst.append(cleaning_dictionnary(lines))
         for (element1,element2) in dictionary_lst:
-            file_cleaning_dictionnary.write(element1 + ";" + element2 + ";\n")
+            file_cleaning_dictionnary.write(element1 + ";" + element2 + "\n")
+    else:
+        affichage(6)
+        for lines in file_cleaning_dictionnary.readlines():
+            lines = lines.rstrip("\n")
+            dictionary_lst.append((lines.split(";")[0],lines.split(";")[-1]))
     affichage(0)
-    # nettoyage de la liste
 
+    # nettoyage de la liste
+    affichage(7)
+    word_list_lst = cleaning_word_list(word_list_txt)
+    affichage(0)
+
+
+    ###############################
+    #    Vecteurs de contextes    #
+    ###############################
+
+    # construction de la liste des mots à traduire
+    affichage(8)
+    lst_to_trad = []
+    for (element,list) in word_list_lst:
+        lst_to_trad.append(element)
+    affichage(0)
+
+    affichage(9)
+    context_vector_lst = []
+    tmp_dico = {}
+    for element in lst_to_trad:
+        tmp_dico = context_vector_construction(element, corpus_source_lst)
+        context_vector_lst.append((element,tmp_dico))
+    affichage(0)
 
 
     ###############################
@@ -165,10 +194,5 @@ if __name__ == "__main__":
     file_cleaning_french_corpus.close()
     file_cleaning_english_corpus.close()
     file_cleaning_dictionnary.close()
-    file_cleaning_list.close()
-
-
-    file_dictionary.close()
-    file_word_list.close()
 
     print(color.BLUE + "\n\n\nfin du programme\n\n\n" + color.END)
