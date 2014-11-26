@@ -177,13 +177,22 @@ if __name__ == "__main__":
         lst_to_trad.append(element)
     affichage(0)
 
+    # construction du vecteur de contexte français
+    # TODO supprimer les mots absents du corpus
     affichage(9)
-    context_vector_lst = []
+    fr_context_vector_lst = []
     tmp_dico = {}
     for element in lst_to_trad:
         tmp_dico = context_vector_construction(element, corpus_source_lst)
-        context_vector_lst.append((element,tmp_dico))
+        fr_context_vector_lst.append((element,tmp_dico))
     affichage(0)
+
+    # traduction du vecteur de contexte en anglais
+    en_context_vector_lst = []
+    for (word_base, context_word) in fr_context_vector_lst:
+        tmp_dico = context_vector_traduction(context_word, dictionary_lst)
+        en_context_vector_lst.append((word_base,tmp_dico))
+
 
 
     ###############################

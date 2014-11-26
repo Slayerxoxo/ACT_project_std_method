@@ -245,6 +245,37 @@ def context_vector_construction (word, corpus_lst):
 
 
 
+
+###    context_vector_traduction    ###
+def context_vector_traduction (context_word_lst, dictionary_lst):
+    '''
+    traduction d'un vecteur de contexte
+
+    :param word:
+    :param corpus_lst:
+    :return:
+    '''
+    new_lst = []
+    new_dico = {}
+    for element in context_word_lst.keys():
+
+        # récupérer toute les traduc
+        # s'il y a plusieurs traduc on fait pour chaque traduc (nombre d'apparition de la traduction)*((nombre d'apparition du mot dans le vecteur)/(nombre de trad))
+        # ne pas ajouter les mots sans trad
+
+        nb_of_traduction = 0    # nombre de traduction en disponible pour le mot fr
+        nb_p_fr = 0 #nombre d'apparition du mot fr dans le vecteur
+        for (fr_word,en_word) in dictionary_lst:
+            nb_ap_traduction = 0    # nombre de fois ou la traduction apparait dans le corpus en
+
+            if element == fr_word :
+                new_lst.append(fr_word)
+                nb_of_traduction += 1
+                
+        # print element
+        # print context_word_lst[element]
+    return new_dico
+
 # def context_vector_construction (french_word, dictionnary_lst):
 #     new_lst = []
 #     for sub_lst in dictionnary_lst:
