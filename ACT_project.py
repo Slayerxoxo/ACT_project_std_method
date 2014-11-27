@@ -65,6 +65,8 @@ if __name__ == "__main__":
     french_corpus_clean = True
     english_corpus_clean = True
     dictionary_clean = True
+    en_vector_context_clean = False
+    english_corpus_count = True
 
 
     ###############################
@@ -116,6 +118,18 @@ if __name__ == "__main__":
     english_stopwords_lst = file_english_stopwords.read()
     file_english_stopwords.close()
 
+    if english_corpus_count == False:
+        file_english_corpus_count = codecs.open("Results/en_corpus_count", "w", "utf-8")
+    else:
+        file_english_corpus_count = codecs.open("Results/en_corpus_count", "r", "utf-8")
+
+    file_fr_vector_context = codecs.open("Results/fr_context_vector", "w", "utf-8")
+
+    if en_vector_context_clean == False:
+        file_en_vector_context = codecs.open("Results/en_context_vector", "w", "utf-8")
+    else:
+        file_en_vector_context = codecs.open("Results/en_context_vector", "r", "utf-8")
+
 
     ###############################
     #    Nettoyage des sources    #
@@ -144,6 +158,16 @@ if __name__ == "__main__":
         for lines in file_cleaning_english_corpus.readlines():
             corpus_target_lst.append(lines.rstrip("\n"))
     affichage(0)
+
+    english_counter_dico = {}
+    if english_corpus_count == False:
+        english_counter_dico = counting_word(corpus_target_lst)
+        for element in english_counter_dico.keys():
+            file_english_corpus_count.write(element + ";" + str(english_counter_dico[element]) + "\n")
+    else:
+        for line in file_english_corpus_count.readlines():
+            english_counter_dico[line.split(";")[0]] = line.split(";")[-1]
+
 
     # nettoyage du dictionnaire
     if dictionary_clean == False:
@@ -184,14 +208,54 @@ if __name__ == "__main__":
     tmp_dico = {}
     for element in lst_to_trad:
         tmp_dico = context_vector_construction(element, corpus_source_lst)
-        fr_context_vector_lst.append((element,tmp_dico))
+        if len(tmp_dico) >= 1:
+            fr_context_vector_lst.append((element,tmp_dico))
+        else:
+            lst_to_trad.remove(element)
+    for (element,element_dico) in fr_context_vector_lst:
+        file_fr_vector_context.write(element + ":")
+        file_fr_vector_context.write(str(element_dico) + "\n")
     affichage(0)
 
     # traduction du vecteur de contexte en anglais
-    en_context_vector_lst = []
-    for (word_base, context_word) in fr_context_vector_lst:
-        tmp_dico = context_vector_traduction(context_word, dictionary_lst)
-        en_context_vector_lst.append((word_base,tmp_dico))
+    affichage(10)
+
+    # pour chaque vecteur
+        # pour chaque mot du vecteur
+        #     on récupere le mot et sa valeur
+        #     on récupère la ou les traductions du mot
+        #         s il y a une seule traduction
+        #             si cette trad et absente du dico on l ajoute avec la meme valeur dans le nouveau dico
+        #             sinon on additionne sa valeur à la précédente
+        #         si il y a plusieurs traduction
+        #             pour chaque trad on compte le nombre d apparition de cette trad dans le corpus ang
+        #             puis on ajoute chaque trad avec pour valeur nb base * nb app / nb trad
+
+
+    mot_a_traduire = fr_context_vector_lst[0][0]
+    vecteur_fr_de_context = fr_context_vector_lst[0][1]
+    vecteur_en_de_context = {}
+
+    for element in vecteur_fr_de_context.keys():
+        nb_app_fr = vecteur_fr_de_context[element]
+        nb_de_trad_diff = 0
+        liste_des_tradutions = []
+        for (fr_element, en_element) in dictionary_lst:
+            if element == fr_element:
+                liste_des_tradutions.append(en_element)
+                nb_de_trad_diff += 1
+        for traduction in liste_des_tradutions:
+            if traduction in english_counter_dico.keys():
+                if not traduction in vecteur_en_de_context.keys():
+                    vecteur_en_de_context[traduction] = (int(nb_app_fr)*int(english_counter_dico[traduction]))/nb_de_trad_diff
+                else:
+                    vecteur_en_de_context[traduction] += (int(nb_app_fr)*int(english_counter_dico[traduction]))/nb_de_trad_diff
+
+    print mot_a_traduire
+    for element in vecteur_en_de_context.keys():
+        print (element + ":" + str(vecteur_en_de_context[element]))
+
+    affichage(0)
 
 
 
@@ -203,5 +267,8 @@ if __name__ == "__main__":
     file_cleaning_french_corpus.close()
     file_cleaning_english_corpus.close()
     file_cleaning_dictionnary.close()
+    file_english_corpus_count.close()
+    file_fr_vector_context.close()
+    file_en_vector_context.close()
 
     print(color.BLUE + "\n\n\nfin du programme\n\n\n" + color.END)
