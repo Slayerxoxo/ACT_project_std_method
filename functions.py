@@ -290,62 +290,28 @@ def add_trad(tmp_dico,tmp_trad_lst, nb_base, en_corpus):
     return new_dico
 
 
-###    context_vector_traduction    ###
-def context_vector_traduction (context_word_lst, dictionary_lst, en_corpus):
-    '''
-    traduction d'un vecteur de contexte
-
-    :param word:
-    :param corpus_lst:
-    :return:
-    '''
-
-    new_dico = {}
 
 
-    # récupérer toute les traduc
-    # s'il y a plusieurs traduc on fait pour chaque traduc (nombre d'apparition de la traduction)*((nombre d'apparition du mot dans le vecteur)/(nombre de trad))
-    # ne pas ajouter les mots sans trad
-
-    #dico {trad1 : nb pondéré, trad2 : nb pondéré}
-    #récupération de toutes les traductions
-    #pour chaque traduction on compte le nombre de fois ou eles apparaissent ds le corpus en
-    #on pondère et on renvoie un dico qui contient toute les trad pondéré
-
-
-
-    for element in context_word_lst.keys():
-        nb_of_traduction = 0                        # nombre de traduction en disponible pour le mot fr
-        nb_ap_fr = context_word_lst[element]        # nombre d'apparition du mot fr dans le vecteur
-        new_lst = []
-        trad_find = False
+def context_vector_traduction(vecteur_fr_dico, english_corpus_count, dictionary_lst):
+    final_dico = {}
+    for element in vecteur_fr_dico.keys():
+        somme_trad_total = 0
+        nb_app_fr = vecteur_fr_dico[element]
+        dico_tmp = {}
+        dico_tmp.clear()
         for (fr_word,en_word) in dictionary_lst:
-            if element == fr_word :
-                trad_find = True
-                new_lst.append(fr_word)
-                nb_of_traduction += 1
-            elif trad_find == True:
-                break
-
-        if nb_of_traduction == 1:
-            if not new_lst[0] in new_dico.keys():
-                new_dico[new_lst[0]] = nb_ap_fr
+            if element == fr_word and en_word in english_corpus_count.keys():
+                dico_tmp[en_word] = float (english_corpus_count[en_word])
+                somme_trad_total += float(english_corpus_count[en_word])
+        for en_word in dico_tmp.keys():
+            if not en_word in final_dico.keys():
+                final_dico[en_word] = (float(nb_app_fr)*float(dico_tmp[en_word]))/somme_trad_total
             else:
-                new_dico[new_lst[0]] += nb_ap_fr
-        elif nb_of_traduction > 1:
-            for trad_word in new_lst:
-                for en_word in en_corpus:
-                    nb_ap_traduction = 0            # nombre de fois ou la traduction apparait dans le corpus en
-                    if trad_word == en_word:
-                        nb_ap_traduction += 1
-                if not trad_word in new_dico.keys():
-                    new_dico[trad_word] = (nb_ap_fr*nb_ap_traduction)/nb_of_traduction
-                else:
-                    new_dico[trad_word] += (nb_ap_fr*nb_ap_traduction)/nb_of_traduction
+                final_dico[en_word] += (float(nb_app_fr)*float(dico_tmp[en_word]))/somme_trad_total
+    return (final_dico)
 
-        # print element
-        # print context_word_lst[element]
-    return new_dico
+
+
 
 # def context_vector_construction (french_word, dictionnary_lst):
 #     new_lst = []
