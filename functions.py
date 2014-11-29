@@ -245,8 +245,18 @@ def context_vector_construction (word, corpus_lst):
     new_dico = {}
     for i , element in enumerate(corpus_lst):
         if element == word:
-            new_lst.extend([corpus_lst[i-3], corpus_lst[i-2],corpus_lst[i-1]])
-            new_lst.extend([corpus_lst[i+1], corpus_lst[i+2],corpus_lst[i+3]])
+            if i <= 220260:
+                new_lst.extend([corpus_lst[i+1], corpus_lst[i+2],corpus_lst[i+3]])
+            elif i == 220261:
+                new_lst.extend([corpus_lst[i+1], corpus_lst[i+2]])
+            elif i == 220262:
+                new_lst.extend([corpus_lst[i+1]])
+            if i >= 3:
+                new_lst.extend([corpus_lst[i-3], corpus_lst[i-2],corpus_lst[i-1]])
+            elif i == 2:
+                new_lst.extend([corpus_lst[i-2],corpus_lst[i-1]])
+            elif i == 1:
+                new_lst.extend([corpus_lst[i-1]])
     for element in new_lst:
         if not element in new_dico.keys():
             new_dico[element] = 1
@@ -417,3 +427,5 @@ def affichage(num):
         print(color.BOLD + "\n\nCONSTRUCTION DES VECTEURS DE CONTEXTES :" + color.END)
     elif num == 10:
         print(color.BOLD + "\n\nTRADUCTION DES VECTEURS DE CONTEXTES :" + color.END)
+    elif num == 11:
+        print(color.BOLD + "\n\nCONSTRUCTION DE TOUS LES VECTEURS DE CONTEXTES ANGLAIS:" + color.END)

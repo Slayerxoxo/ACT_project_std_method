@@ -67,6 +67,7 @@ if __name__ == "__main__":
     dictionary_clean = True
     en_vector_context_clean = True
     english_corpus_count = True
+    total_en_vector_context_clean = False
 
 
     ###############################
@@ -129,6 +130,11 @@ if __name__ == "__main__":
         file_en_vector_context = codecs.open("Results/en_context_vector", "w", "utf-8")
     else:
         file_en_vector_context = codecs.open("Results/en_context_vector", "r", "utf-8")
+
+    if total_en_vector_context_clean == False:
+        file_total_en_vector_context = codecs.open("Results/total_en_context_vector", "w", "utf-8")
+    else:
+        file_total_en_vector_context = codecs.open("Results/total_en_context_vector", "r", "utf-8")
 
 
     ###############################
@@ -202,7 +208,6 @@ if __name__ == "__main__":
     affichage(0)
 
     # construction des vecteurs de contexte français
-    # TODO supprimer les mots absents du corpus
     affichage(9)
     fr_context_vector_lst = []
     tmp_dico = {}
@@ -241,9 +246,22 @@ if __name__ == "__main__":
                 tmp_float = element.split(" ")[-1]
                 tmp_dico[tmp_word] = float(tmp_float)
             en_context_vector_lst.append((word_base,tmp_dico))
-    for (base_word,dico) in en_context_vector_lst:
-        print base_word
-        print dico
+    affichage(0)
+
+    #construction des vecteurs de contextes pour chaque mot du corpus anglais
+    affichage(11)
+    lst_en_word = []
+    for element in english_counter_dico.keys():
+        lst_en_word.append(element)
+
+    total_en_context_vector_lst = []
+    tmp_dico = {}
+    for element in lst_en_word:
+        tmp_dico = context_vector_construction(element, corpus_target_lst)
+        total_en_context_vector_lst.append((element,tmp_dico))
+    for (element,element_dico) in total_en_context_vector_lst:
+        file_total_en_vector_context.write(element + ":")
+        file_total_en_vector_context.write(str(element_dico) + "\n")
     affichage(0)
 
 
