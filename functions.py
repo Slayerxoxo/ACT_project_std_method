@@ -428,4 +428,8 @@ def affichage(num):
     elif num == 10:
         print(color.BOLD + "\n\nTRADUCTION DES VECTEURS DE CONTEXTES :" + color.END)
     elif num == 11:
-        print(color.BOLD + "\n\nCONSTRUCTION DE TOUS LES VECTEURS DE CONTEXTES ANGLAIS:" + color.END)
+        print(color.BOLD + "\n\nCONSTRUCTION DE TOUS LES VECTEURS DE CONTEXTES ANGLAIS :" + color.END)
+    elif num == 12:
+        print(color.BOLD + "\n\nCALCULS DES COSINUS :" + color.END)
+    elif num == 13:
+        print(color.BOLD + "\n\nRESULTATS :" + color.END)

@@ -278,9 +278,31 @@ if __name__ == "__main__":
                 tmp_float = element.split(" ")[-1]
                 tmp_dico[tmp_word] = float(tmp_float)
             total_en_context_vector_lst.append((word_base,tmp_dico))
+    affichage(0)
 
-        for element in total_en_context_vector_lst:
-            print element
+
+    ###############################
+    #           Calculs           #
+    ###############################
+
+    # Calculs des cosinus
+    affichage(12)
+    cosinus_lst = []
+    for (word_to_trad, vector) in en_context_vector_lst:
+        dico_tmp = {}
+        for (potential_word_trad, vector_test) in total_en_context_vector_lst:
+            dico_tmp[potential_word_trad] = cosine(vector,vector_test)
+        cosinus_lst.append((word_to_trad,dico_tmp))
+    affichage(0)
+
+    # Calculs des résultats
+    affichage(13)
+    for (word_to_trad, dico) in cosinus_lst:
+        from operator import itemgetter
+        l = dico.items()
+        l.sort(key=itemgetter(1), reverse=True)
+        print(word_to_trad)
+        print(l[:10])
     affichage(0)
 
 
