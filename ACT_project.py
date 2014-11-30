@@ -67,7 +67,7 @@ if __name__ == "__main__":
     dictionary_clean = True
     en_vector_context_clean = True
     english_corpus_count = True
-    total_en_vector_context_clean = False
+    total_en_vector_context_clean = True
 
 
     ###############################
@@ -248,6 +248,7 @@ if __name__ == "__main__":
             en_context_vector_lst.append((word_base,tmp_dico))
     affichage(0)
 
+
     #construction des vecteurs de contextes pour chaque mot du corpus anglais
     affichage(11)
     lst_en_word = []
@@ -255,13 +256,31 @@ if __name__ == "__main__":
         lst_en_word.append(element)
 
     total_en_context_vector_lst = []
-    tmp_dico = {}
-    for element in lst_en_word:
-        tmp_dico = context_vector_construction(element, corpus_target_lst)
-        total_en_context_vector_lst.append((element,tmp_dico))
-    for (element,element_dico) in total_en_context_vector_lst:
-        file_total_en_vector_context.write(element + ":")
-        file_total_en_vector_context.write(str(element_dico) + "\n")
+    if total_en_vector_context_clean == False:
+        tmp_dico = {}
+        for element in lst_en_word:
+            tmp_dico = context_vector_construction(element, corpus_target_lst)
+            total_en_context_vector_lst.append((element,tmp_dico))
+        for (element,element_dico) in total_en_context_vector_lst:
+            file_total_en_vector_context.write(element + ":")
+            file_total_en_vector_context.write(str(element_dico) + "\n")
+    else:
+        for lines in file_total_en_vector_context.readlines():
+            word_base = lines.split(":")[0]
+            lines = " " + lines.split("{")[1]
+            lines = lines.split("}")[0]
+            tmp_lst = []
+            tmp_dico = {}
+            tmp_lst = lines.split(",")
+            for element in tmp_lst:
+                tmp_word = element.split("'")[1]
+                tmp_word = tmp_word.split("'")[0]
+                tmp_float = element.split(" ")[-1]
+                tmp_dico[tmp_word] = float(tmp_float)
+            total_en_context_vector_lst.append((word_base,tmp_dico))
+
+        for element in total_en_context_vector_lst:
+            print element
     affichage(0)
 
 
@@ -274,8 +293,12 @@ if __name__ == "__main__":
     file_cleaning_french_corpus.close()
     file_cleaning_english_corpus.close()
     file_cleaning_dictionnary.close()
+    file_english_stopwords.close()
+    file_french_stopwords.close()
     file_english_corpus_count.close()
     file_fr_vector_context.close()
     file_en_vector_context.close()
+    file_total_en_vector_context.close()
+    file_words_list.close()
 
     print(color.BLUE + "\n\n\nfin du programme\n\n\n" + color.END)
