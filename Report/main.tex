@@ -38,26 +38,26 @@
 
 	%%%%% Sommaire %%%%%
 	\tableofcontents
-	
+	\newpage	
 
 	%%%%% Introduction %%%%%
 	\section*{Introduction}
 	\addcontentsline{toc}{section}{\protect\numberline{}Introduction}
-	%\input{./introduction.tex}
+	\input{./introduction.tex}
 
 
-	%%%%% Parties à ajouter %%%%%
-	%\section{Partie}
+	%%%%% Contenu %%%%%
+	\input{./contenu.tex}
 
 
 	%%%%% Conclusion %%%%%
 	\section*{Conclusion}
 	\addcontentsline{toc}{section}{\protect\numberline{}Conclusion}
 	%\input{./conclusion.tex}
-	%\newpage
+	\newpage
 	
 	%%%%% Bibliographie %%%%% (Attention, citer une source de bibliographie sinon bug)
-	%\bibliographystyle{plain}
-	%\bibliography{biblio}
+	\bibliographystyle{plain}
+	\bibliography{biblio}
 
 \end{document}

@@ -1,0 +1,72 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%                        CONTENU                           %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%                Author : Coraline Marie                   %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Présentation de la méthode standard}
+
+	L'algorithme de la méthode standard détaillé dans l'article de Fung et de McKeown\cite{Fung97findingterminology}, se déroule en quatre temps :
+	\begin{enumerate}
+		\item La première étape consiste à construire une liste bilingue de paires de termes connus. Cette liste servira plus tard de \textit{dictionnaire}, pour la traduction des vecteurs de contextes. 
+		\item Lors de la seconde étape, un vecteur de contexte doit être construit pour chaque terme inconnu (sans traduction) de la langue source. Ces vecteurs sont ensuite traduit dans la langue cible, à l'aide du dictionnaire créé lors de la première étape.
+		\item Pour la troisième étape, un vecteur de contexte est créé pour chaque terme du corpus de la langue cible. Ils serviront d'éléments de comparaison lors de la quatrième étape.
+		\item Pour finir, chaque vecteur de contextes traduits est comparé avec les vecteurs de contexte des termes de la langue cible : s'ils sont similaires, cela signifie qu'ils sont traduction l'un de l'autre. 
+	\end{enumerate}
+
+
+\section{Prétraitement des corpus}
+	
+	Avant même de commencer le traitement des données, il faut au préalable nettoyer les corpus. Ces derniers sont souvent bruités et incompatible avec l'algorithme sans prétraitement.
+	
+	\subsection{Le corpus source}
+	Pour ce projet, le corpus source choisi est en français, et traite du cancer du sein. Il est également annoté avec des étiquettes morphosyntaxiques. Ainsi lors du prétraitement, les étiquettes morpho-syntaxique sont d'abord supprimées pour ne garder que le lemme. Les accents sont ensuite supprimés, et les majusules sont converties en minuscules. Tous les termes contenant des éléments de ponctuations, des symboles ou des chiffres sont également supprimés. Dans ce corpus, il existe également des phrases écrites en anglais (citations, liens \dots), qu'il faut supprimer. De plus, afin d'améliorer le temps de traitement, ainsi que les calculs des vecteurs de contextes, les \textit{stopwords} sont supprimés.
+		
+	\subsection{Le corpus cible}
+		suppression des information inutiles
+		suppression des phrases française
+		suppression des majuscules
+		supp des mots outils
+		suppr de la ponctuation et des chiffres
+	\subsection{Le dictionnaire}
+		suppression des information inutiles
+		remplacement des espaces par \_
+	\subsection{La liste des mots à traduire}
+		suppression des mot absent du corpus français
+		suppression des trad absent du corpus anglais
+
+\section{construction du dictionnaire de cognats}
+	suppression des termes à préfixe
+		inter - semi - intra - anti - poly - post - micro - radio - méta - multi
+	suppression des mots composer -
+	combien de cognats 4 grammes
+	combien de cognats 5 grammes
+
+\section{Vecteurs de contextes}
+	construction
+		taille de la fenêtre
+	traduction
+		sans cognat
+		avec cognat
+	mesures de similarité
+
+\section{Résultats}
+	méthode standard classique avec pondération normale
+	méthode standard avec table de contingence
+	méthode standard avec cognats
+
+Création des cognats
+ajout du dictionnaire des cognats 
+
+
+	Délimitation de la zone de test
+	top 1
+	top 5 
+	top 10
+	agrandissement du dictionnaire avec les synonymes
+
+Amélioration des résultats
+	limitation des vecteurs de contexte dans une phrase +0.5\%
+	suppression des mots outils après la construction du vecteur de contextes +0.1\%
+	changement de la taille de la taille du vecteur +-0.0 \%
+	

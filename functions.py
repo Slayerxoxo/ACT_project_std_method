@@ -189,6 +189,7 @@ def cleaning_dictionnary(line):
     new_couple = (line.split(";")[0] , line.split(";")[-2])
     return new_couple
 
+
 ###    cleaning_word_list    ###
 def cleaning_word_list(corpus_lst):
     '''
@@ -322,17 +323,6 @@ def context_vector_traduction(vecteur_fr_dico, english_corpus_count, dictionary_
 
 
 
-
-# def context_vector_construction (french_word, dictionnary_lst):
-#     new_lst = []
-#     for sub_lst in dictionnary_lst:
-#         if sub_lst[0] == french_word:
-#             new_lst = sub_lst
-#             new_lst.remove[0]
-#             print(french_word + " -> " + new_lst)
-#     return new_lst
-
-
 ###############################
 #           Calculs           #
 ###############################
@@ -362,21 +352,6 @@ def cosine(v1, v2):
         v1v1 += (attr1 * attr1)
         v2v2 += (attr2 * attr2)
     return v1v2 / (math.sqrt(v1v1) * math.sqrt(v2v2))
-
-
-###############################
-# Afficher le top 10          #
-###############################
-# traductionsCandidates = sorted(traductionsCandidates.items(), key=lambda x: (-x[1], x[0]))
-#
-#     cleanedTraductionsCandidates = {}
-#     counter = 0
-#     for el in traductionsCandidates:
-#         if counter > 9:
-#             break
-#         else:
-#             cleanedTraductionsCandidates[el[0]] = el[1]
-#             counter = counter+1
 
 
 
