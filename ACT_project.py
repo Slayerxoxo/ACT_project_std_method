@@ -65,9 +65,9 @@ if __name__ == "__main__":
     french_corpus_clean = True
     english_corpus_clean = True
     dictionary_clean = True
-    en_vector_context_clean = True
+    en_vector_context_clean = False
     english_corpus_count = True
-    total_en_vector_context_clean = True
+    total_en_vector_context_clean = False
 
 
     ###############################
@@ -124,6 +124,10 @@ if __name__ == "__main__":
     else:
         file_english_corpus_count = codecs.open("Results/en_corpus_count", "r", "utf-8")
 
+    file_cognat_4gram = codecs.open("Results/cognat_4gram", "w", "utf-8")
+    file_cognat_5gram = codecs.open("Results/cognat_5gram", "w", "utf-8")
+    file_cognat_6gram = codecs.open("Results/cognat_6gram", "w", "utf-8")
+
     file_fr_vector_context = codecs.open("Results/fr_context_vector", "w", "utf-8")
 
     if en_vector_context_clean == False:
@@ -165,6 +169,7 @@ if __name__ == "__main__":
             corpus_target_lst.append(lines.rstrip("\n"))
     affichage(0)
 
+    # comptage du corpus anglais
     english_counter_dico = {}
     if english_corpus_count == False:
         english_counter_dico = counting_word(corpus_target_lst)
@@ -173,7 +178,6 @@ if __name__ == "__main__":
     else:
         for line in file_english_corpus_count.readlines():
             english_counter_dico[line.split(";")[0]] = line.split(";")[-1]
-
 
     # nettoyage du dictionnaire
     if dictionary_clean == False:
@@ -190,9 +194,59 @@ if __name__ == "__main__":
             dictionary_lst.append((lines.split(";")[0],lines.split(";")[-1]))
     affichage(0)
 
+
     # nettoyage de la liste
     affichage(7)
     word_list_lst = cleaning_word_list(word_list_txt)
+    affichage(0)
+
+
+    ###############################
+    #    Création des cognats     #
+    ###############################
+
+    affichage(14)
+    bad_lst = ["inter", "intra", "micro", "radio", "multi", "semi", "anti", "poly", "post", "meta"]
+
+    word_source_lst = []
+    for element in corpus_source_lst:
+        if not element in word_source_lst and not element[:4] in bad_lst and not element[:5] in bad_lst:
+            word_source_lst.append(element)
+    word_target_lst = []
+    for element in corpus_target_lst:
+        if not element in word_target_lst and not element[:4] in bad_lst and not element[:5] in bad_lst:
+            word_target_lst.append(element)
+
+    cognat_4gram_lst = []
+    for word_source in word_source_lst:
+        tmp_source_4gram = word_source[:4]
+        for word_target in word_target_lst:
+            tmp_target_4gram = word_target[:4]
+            if tmp_source_4gram == tmp_target_4gram:
+                cognat_4gram_lst.append((word_source,word_target))
+    for (element1,element2) in cognat_4gram_lst:
+        file_cognat_4gram.write(element1 + " " + element2 + "\n")
+
+    cognat_5gram_lst = []
+    for word_source in word_source_lst:
+        tmp_source_5gram = word_source[:5]
+        for word_target in word_target_lst:
+            tmp_target_5gram = word_target[:5]
+            if tmp_source_5gram == tmp_target_5gram:
+                cognat_5gram_lst.append((word_source,word_target))
+    for (element1,element2) in cognat_5gram_lst:
+        file_cognat_5gram.write(element1 + " " + element2 + "\n")
+
+    cognat_6gram_lst = []
+    for word_source in word_source_lst:
+        tmp_source_6gram = word_source[:6]
+        for word_target in word_target_lst:
+            tmp_target_6gram = word_target[:6]
+            if tmp_source_6gram == tmp_target_6gram:
+                cognat_6gram_lst.append((word_source,word_target))
+    for (element1,element2) in cognat_6gram_lst:
+        file_cognat_6gram.write(element1 + " " + element2 + "\n")
+
     affichage(0)
 
 
@@ -227,7 +281,7 @@ if __name__ == "__main__":
     en_context_vector_lst = []
     if en_vector_context_clean == False:
         for (word_base,vecteur_fr_dico) in fr_context_vector_lst:
-            tmp_dico = context_vector_traduction(vecteur_fr_dico, english_counter_dico, dictionary_lst)
+            tmp_dico = context_vector_traduction(vecteur_fr_dico, english_counter_dico, dictionary_lst, cognat_6gram_lst)
             en_context_vector_lst.append((word_base,tmp_dico))
         for (word_base,vecteur_en_dico) in en_context_vector_lst:
             file_en_vector_context.write(word_base + ":")
@@ -318,6 +372,8 @@ if __name__ == "__main__":
     file_english_stopwords.close()
     file_french_stopwords.close()
     file_english_corpus_count.close()
+    file_cognat_4gram.close()
+    file_cognat_5gram.close()
     file_fr_vector_context.close()
     file_en_vector_context.close()
     file_total_en_vector_context.close()

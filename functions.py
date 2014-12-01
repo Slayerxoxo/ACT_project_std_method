@@ -70,7 +70,7 @@ def isAWord(string):
     :return:
     '''
     ponctuation_lst = [u".", u",", u"?", u";", u":", u"!", u"<", u">", u"\"", u"-", u"\'", u"«", u"»"]
-    symbol_lst = [u"#", u"%", u"+", u"=", u"/", u"(", u")", u"[", u"]"]
+    symbol_lst = [u"#", u"%", u"+", u"=", u"/", u"(", u")", u"[", u"]", u"{", u"}"]
     number_lst = [u"1", u"2", u"3", u"4", u"5", u"6", u"7", u"8", u"9", u"0"]
     badWord_lst = [u"__endfile", u"__ENDFILE", u"__file"]
     empty_lst = [u"\r\n", u"\n", u" "]
@@ -246,11 +246,11 @@ def context_vector_construction (word, corpus_lst):
     new_dico = {}
     for i , element in enumerate(corpus_lst):
         if element == word:
-            if i <= 220260:
+            if i <= 220246:
                 new_lst.extend([corpus_lst[i+1], corpus_lst[i+2],corpus_lst[i+3]])
-            elif i == 220261:
+            elif i == 220247:
                 new_lst.extend([corpus_lst[i+1], corpus_lst[i+2]])
-            elif i == 220262:
+            elif i == 220248:
                 new_lst.extend([corpus_lst[i+1]])
             if i >= 3:
                 new_lst.extend([corpus_lst[i-3], corpus_lst[i-2],corpus_lst[i-1]])
@@ -303,17 +303,24 @@ def add_trad(tmp_dico,tmp_trad_lst, nb_base, en_corpus):
 
 
 
-def context_vector_traduction(vecteur_fr_dico, english_corpus_count, dictionary_lst):
+def context_vector_traduction(vecteur_fr_dico, english_corpus_count, dictionary_lst, cognat_lst):
     final_dico = {}
     for element in vecteur_fr_dico.keys():
+        trad = False
         somme_trad_total = 0
         nb_app_fr = vecteur_fr_dico[element]
         dico_tmp = {}
         dico_tmp.clear()
         for (fr_word,en_word) in dictionary_lst:
             if element == fr_word and en_word in english_corpus_count.keys():
+                trad = True
                 dico_tmp[en_word] = float (english_corpus_count[en_word])
                 somme_trad_total += float(english_corpus_count[en_word])
+        if trad == False:
+            for (fr_word,en_word) in cognat_lst:
+                if element == fr_word and en_word in english_corpus_count.keys():
+                    dico_tmp[en_word] = float (english_corpus_count[en_word])
+                    somme_trad_total += float(english_corpus_count[en_word])
         for en_word in dico_tmp.keys():
             if not en_word in final_dico.keys():
                 final_dico[en_word] = (float(nb_app_fr)*float(dico_tmp[en_word]))/somme_trad_total
@@ -408,3 +415,5 @@ def affichage(num):
         print(color.BOLD + "\n\nCALCULS DES COSINUS :" + color.END)
     elif num == 13:
         print(color.BOLD + "\n\nRESULTATS :" + color.END)
+    elif num == 14:
+        print(color.BOLD + "\n\nCREATION DES COGNATS :" + color.END)
