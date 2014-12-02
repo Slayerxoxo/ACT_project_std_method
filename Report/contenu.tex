@@ -55,7 +55,7 @@
 
 	\vspace{0.5cm}
 	
-	\noindent{Ainsi, deux dictionnaires de cognats on été construits pour les tests :} 
+	\noindent{Ainsi, trois dictionnaires de cognats on été construits pour les tests :} 
 	\begin{itemize}
 		\item 4-grammes : 32265 termes alignés
 		\item 5-grammes : 15056 termes alignés
@@ -66,38 +66,45 @@
 
 \section{Vecteurs de contextes}
 
-	\subsection{Construction des vecteurs de contextes}
-	La méthode standard utilise les vecteurs de contextes comme base pour la traduction automatique. Chaque termes à traduire doit donc avoir un vecteur de contextes qui lui est propre. Pour cela, il suffit de parcourir l'intégralité du corpus source, et de récupérer tous les termes qui entourent chaque occurence du mot qu l'on souhaite traduire. Cependant, les termes récupérés doivent être proche du mot à traduire, c'est à dire qu'ils doivent être situés au maximum 3 mots avant ou 3 mots après chaque occurence du terme à traduire. \\
+	\subsection{Construction}
 	
-	En ce qui concerne les vecteurs de contexes anglais, la méthode de construction est la même. Cependant il faut construire un vecteur de contexte pour tous les termes présents dans le corpus cible. Ces vecteurs serviront ensuite d'éléments de comparaison pour les termes à traduire, il faut donc qu'ils soient construit de la même manière. Il y a environ 7900 vecteurs de contextes pour une centaine de termes à traduire.
+	La méthode standard utilise les vecteurs de contextes comme base pour la traduction automatique. Chaque termes à traduire doit donc avoir un vecteur de contextes qui lui est propre. Pour cela, il suffit de parcourir l'intégralité du corpus source, et de récupérer tous les termes qui entourent chaque occurence du mot qu l'on souhaite traduire. Cependant, les termes récupérés doivent être proche du mot à traduire, c'est à dire qu'ils doivent être situés au maximum 3 mots avant ou 3 mots après chaque occurence. \\
 	
-	\subsection{Traduction des vecteurs de contextes}
+	Après avoir construit les vecteurs de contextes des termes techniques, il est nécessaire de les traduire. Cette traduction permettra ensuite de les comparer comparer avec d'autres vecteurs construits a partir du corpus cible. Pour ce projet, la traduction c'est faite de deux manières différentes : avec et sans les dictionnaires de cognats.\\
 	
-	Lorsque les vecteurs de contextes des termes à traduire sont construits, il est nécessaire de les traduire pour pouvoir les comparer avec ceux du corpus cible. Pour ce projet, la traduction c'est faite de deux manières différentes : avec et sans les dictionnaires de cognats.\\
+	Dans la méthode standard, seul le dictionnaire classique est utilisé pour traduire les vecteurs de contextes, mais pour ce projet, il a été décidé d'ajouter des dictionnaires de cognats pour améliorer les résultats. En effet, si un terme présent dans un vecteur de contexte ne peut pas être traduit par le dictionnaire classique, on utilise alors un dictionnaire de cognats pour trouver une traduction alternative. Les résultats obtenus par ces différents procédés seront détaillés dans la partie résultats.\\
 	
-	Dans la méthode standard, seul le dictionnaire classique est utilisé pour traduire les vecteur de contextes, mais pour ce projet, nous avons décidé d'ajouter les dictionnaires de cognats afin d'améliorer la traduction. En effet, si un terme présent dans un vecteur de contexte ne peut pas être traduit par le dictionnaire classique, on utilise alors les dictionnaires de cognats pour leur trouver une traduction potentielle. Les résultats obtenu par ces différents procédés sont détaillé dans la partie Résultats.
+	En ce qui concerne les vecteurs de contexes anglais, la méthode de construction est la même que celle des utilisée pour les termes techniques. Cependant il faut construire un vecteur de contexte pour tous les termes présents dans le corpus cible, car ces vecteurs serviront ensuite d'éléments de comparaison pour les termes à traduire. Il y a environ 7900 vecteurs de contextes et une centaine de termes à traduire.
+	
+	\subsection{Comparaisons}
+	
+	Lorsque tous les vecteurs de contextes sont construits, il ne suffit plus que de les comparer. Pour cela, on utilise la fonction mesure \textit{cosinus}, qui permet de calculer la similarité entre deux vecteurs. Ainsi, chaque des vecteurs représentant un termes à traduire est comparé avec tous les vecteurs représentant un terme du corpus cible. La fonction \textit{cosinus} retourne ensuite un score pour chaque comparaison : plus la valeur de ce score est grande, et plus les deux vecteurs se ressemble.
 	
 
 \section{Résultats}
-
-	mesures de similarité
-
-	méthode standard classique avec pondération normale
-	méthode standard avec table de contingence
-	méthode standard avec cognats
-
-Création des cognats
-ajout du dictionnaire des cognats 
-
-
-	Délimitation de la zone de test
-	top 1
-	top 5 
-	top 10
-	agrandissement du dictionnaire avec les synonymes
-
-Amélioration des résultats
-	limitation des vecteurs de contexte dans une phrase +0.5\%
-	suppression des mots outils après la construction du vecteur de contextes +0.1\%
-	changement de la taille de la taille du vecteur +-0.0 \%
 	
+	Afin de mesurer et de comparer les différents résultats obtenus par la méthode standard de Fung et de McKeown, la précision a été mesurée sur plusieurs niveaux : 
+	\begin{itemize}
+		\item le top 1, qui vérifie si la plus forte proposition est également la traduction attendue ;
+		\item le top 5, qui vérifie si la bonne traduction est dans les 5 meilleures propositions ;
+		\item le top 10, qui vérifie si la traduction attendue est dans les 10 meilleures propositions.
+	\end{itemize}
+	
+	\begin{center}
+		\begin{tabular}{|l | c c c |}
+			\hline
+			 & \textbf{Top 1} & \textbf{Top 5} & \textbf{Top 10}\rule[-6pt]{0pt}{18pt} \\
+			\hline
+			\textit{méthode standard seule} & 28,24 \% & 42,35 \% & 43,53 \% \rule[-4pt]{0pt}{14pt}\\
+			\hline
+			\textit{avec cognats 4 grammes} & 31,76 \% & 45,88 \% & 51,76 \% \rule[-4pt]{0pt}{14pt}\\
+			\hline
+			\textit{avec cognats 5 grammes} & 32,94 \% & 47,06 \% & 54,12 \% \rule[-4pt]{0pt}{14pt}\\
+			\hline
+			\textit{avec cognats 6 grammes} & 32,94 \% & 48,24 \% & 55,29 \% \rule[-4pt]{0pt}{14pt}\\
+			\hline
+		\end{tabular}
+	\end{center}
+	
+
+	Les résultats précédents démontrent que la méthode standard de Fung et de McKeown reste très limité. Sur les corpus comparables du cancer du sein, seulement 28 \% des meilleures suggestion sont les bonnes traductions. Cependant, l'ajout des différents dictionnaires de cognats démontrent que ces résultats peuvent être légèrement amélioré, jusqu'à 33 \%.
