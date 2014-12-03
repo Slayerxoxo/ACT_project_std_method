@@ -8,48 +8,48 @@
 
 	L'algorithme de la méthode standard détaillé dans l'article de Fung et de McKeown, se déroule en quatre temps :
 	\begin{enumerate}
-		\item La première étape consiste à construire une liste bilingue de paires de termes connus. Cette liste servira plus tard de \textit{dictionnaire}, pour la traduction des vecteurs de contextes. 
-		\item Lors de la seconde étape, un vecteur de contextes doit être construit pour chaque terme inconnu (sans traduction) de la langue source. Ces vecteurs sont ensuite traduit dans la langue cible, à l'aide du dictionnaire créé lors de la première étape.
+		\item La première étape consiste à construire une liste bilingue de paires de termes connus. Cette liste servira plus tard de \textit{dictionnaire}, pour la traduction des vecteurs de contexte. 
+		\item Lors de la seconde étape, un vecteur de contexte doit être construit pour chaque terme inconnu (sans traduction) de la langue source. Ces vecteurs sont ensuite traduits dans la langue cible, à l'aide du dictionnaire créé lors de la première étape.
 		\item Pour la troisième étape, un vecteur de contexte est créé pour chaque terme du corpus de la langue cible. Ils serviront d'éléments de comparaison lors de la quatrième étape.
-		\item Pour finir, chaque vecteur de contextes traduits est comparé avec les vecteurs de contexte des termes de la langue cible : s'ils sont similaires, cela signifie qu'ils sont traduction l'un de l'autre. 
+		\item Pour finir, chaque vecteur de contexte traduit est comparé avec les vecteurs de contexte des termes de la langue cible : s'ils sont similaires, cela signifie qu'ils sont traductions l'un de l'autre. 
 	\end{enumerate}
 
 
 \section{Prétraitement des corpus}
 	
-	Avant même de commencer le traitement des données, il faut au préalable nettoyer les corpus. Ces derniers sont souvent bruités, et sans prétraitement ils sont incompatible avec l'algorithme.
+	Avant même de commencer le traitement des données, il faut au préalable nettoyer les corpus. Ces derniers sont souvent bruités, et sans prétraitement ils sont incompatibles avec l'algorithme.
 	
 	\subsection{Le corpus source}
-	Pour ce projet, le corpus source choisi est en français, et traite du cancer du sein. Il est également annoté avec des étiquettes morpho-syntaxiques. Ainsi lors du prétraitement, les étiquettes morpho-syntaxiques sont d'abord supprimées pour ne garder que le lemme. Les caractères accentués sont remplacés par des caractères classiques, et les majusules sont converties en minuscules. Tous les termes contenant des éléments de ponctuations, des symboles ou des chiffres sont également supprimés. Par ailleurs, il existe dans ce corpus des phrases écrites en anglais (citations, liens, \dots), qu'il faut retirer manuellement. De plus, afin d'améliorer le temps de traitement, ainsi que les calculs des vecteurs de contextes, les \textit{stopwords} et les hapax sont également effacés.
+	Pour ce projet, le corpus source choisi est en français, et traite du cancer du sein. Il est également annoté avec des étiquettes morpho-syntaxiques. Ainsi lors du prétraitement, les étiquettes morpho-syntaxiques sont d'abord supprimées pour ne garder que le lemme. Les caractères accentués sont remplacés par des caractères classiques, et les majusules sont converties en minuscules. Tous les termes contenant des éléments de ponctuations, des symboles ou des chiffres sont également supprimés. Par ailleurs, il existe dans ce corpus des phrases écrites en anglais (citations, liens, \dots), qu'il faut retirer manuellement. De plus, afin d'améliorer le temps de traitement, ainsi que les calculs des vecteurs de contexte, les \textit{stopwords} et les hapax sont également effacés.
 		
 	\subsection{Le corpus cible}
 	
-	Afin d'obtenir des corpus comparables bilingues, le corpus cible choisi est en anglais, et traite également du cancer du sein. Comme le corpus source, il est annoté avec des étiquettes morpho-syntaxiques qu'il faut au préalable retirer, pour ne garder que le lemme. Les majuscules et tous les termes contenant des éléments de ponctuations, des symboles ou des chiffres sont supprimés, tous comme les phrases écrites en français, les \textit{stopwords} et les hapax.
+	Afin d'obtenir des corpus comparables bilingues, le corpus cible choisi est en anglais, et traite également du cancer du sein. Comme le corpus source, il est annoté avec des étiquettes morpho-syntaxiques qu'il faut au préalable retirer, pour ne garder que le lemme. A l'instar des phrases écrites en français, des stopwords et des hapax, les majuscules sont converties et les termes contenant des éléments de ponctuations, des symboles ou des chiffres sont supprimés.
 	
 	\subsection{Le dictionnaire}
 	
-	Le dictionnaire français/anglais utilisé est légèrement bruité, et nécessite quelques modifications. Les étiquettes morpho-syntaxiques sont au préalable supprimées pour ne garder que le lemme des mots sources et des mots cibles. Puis, les espaces séparant les termes des expressions traduites (exemple : "a priori", "trou noir", "get off", \dots) sont remplacés par des "\_". Ceci est fait dans le but de respecter les conventions d'anotation des corpus source et cible.
+	Le dictionnaire français/anglais utilisé est légèrement bruité, et nécessite quelques modifications. Les étiquettes morpho-syntaxiques sont au préalable supprimées pour ne garder que le lemme des mots sources et des mots cibles. Puis, les espaces séparant les termes des expressions traduites (exemple : "a priori", "trou noir", "get off", \dots) sont remplacés par le caractère "\_". Ceci est fait dans le but de respecter les conventions d'annotation des corpus source et cible.
 	
 	\subsection{La liste des mots à traduire}
 	
-	L'évaluation de la méthode standard de Fung et de McKeown se fait par l'intermédiaire d'une liste de termes techniques absents du dictionnaire. Cependant, il est nécéssaire de vérifier que ces termes soient présents dans le corpus source, et que leur traduction soit également présente dans le corpus cible. Si ce n'est pas le cas, l'algorithme n'a aucune chance de traduire un terme qu'il ne rencontre pas dans les corpus.
+	L'évaluation de la méthode standard de Fung et de McKeown se fait par l'intermédiaire d'une liste de termes techniques absents du dictionnaire. Cependant, il est nécessaire de vérifier que ces termes soient présents dans le corpus source, et que leur traduction soit également présente dans le corpus cible. Si ce n'est pas le cas, l'algorithme n'a aucune chance de traduire un terme qu'il ne rencontre pas dans les corpus.
 
 
 \section{Construction du dictionnaire de cognats}
 
-	L'une des pistes évoquée pour améliorer les résultats de la méthode standard, est l'utilisation d'un dictionnaire de cognats. En effet, un dictionnaire de cognats construit à partir de corpus comparables peut aisément renforcer le dictionnaire de base, en apportant de nouvelles traductions. Cependant, la construction d'un tel dictionnaire nécessite quelques précautions, comme par exemple la suppression des termes préfixés par :
-	\begin {multicols}{2}
+	L'une des pistes évoquées pour améliorer les résultats de la méthode standard est l'utilisation d'un dictionnaire de cognats. En effet, un dictionnaire de cognats construit à partir de corpus comparables peut aisément renforcer le dictionnaire de base, en apportant de nouvelles traductions. Cependant, la construction d'un tel dictionnaire nécessite quelques précautions, comme par exemple la suppression des termes préfixés par :
+	\begin {multicols}{3}
 	\begin{itemize}
-		\item inter 
-		\item semi 
-		\item intra 
-		\item anti 
-		\item poly 
-		\item post 
-		\item micro 
-		\item radio 
-		\item méta 
-		\item multi
+		\item "inter"
+		\item "semi"
+		\item "intra"
+		\item "anti"
+		\item "poly"
+		\item "post"
+		\item "micro"
+		\item "radio"
+		\item "méta"
+		\item "multi"
 	\end{itemize}
 	\end {multicols}	
 
@@ -62,23 +62,23 @@
 		\item 6-grammes : 7695 termes alignés
 	\end{itemize}
 	
-	\noindent{Les résultats obtenus en utilisant ces trois dictionnaires seront présenté dans la partie résultats.} 
+	\noindent{Les résultats obtenus en utilisant ces trois dictionnaires seront présentés dans la partie Résultats.} 
 
-\section{Vecteurs de contextes}
+\section{Vecteurs de contexte}
 
 	\subsection{Construction}
 	
-	La méthode standard utilise les vecteurs de contextes comme base pour la traduction automatique. Chaque termes à traduire doit donc avoir un vecteur de contextes qui lui est propre. Pour cela, il suffit de parcourir l'intégralité du corpus source, et de récupérer tous les termes qui entourent chaque occurence du mot qu l'on souhaite traduire. Cependant, les termes récupérés doivent être proche du mot à traduire, c'est à dire qu'ils doivent être situés au maximum 3 mots avant ou 3 mots après chaque occurence. \\
+	La méthode standard utilise les vecteurs de contexte comme base pour la traduction automatique. Chaque terme à traduire doit donc avoir un vecteur de contexte qui lui est propre. Pour cela, il suffit de parcourir l'intégralité du corpus source, et de récupérer tous les termes qui entourent chaque occurence du mot que l'on souhaite traduire. Cependant, les termes récupérés doivent être proche du mot à traduire, c'est-à-dire qu'ils doivent être situés au maximum 3 mots avant ou 3 mots après chaque occurence. \\
 	
-	Après avoir construit les vecteurs de contextes des termes techniques, il est nécessaire de les traduire. Cette traduction permettra ensuite de les comparer comparer avec d'autres vecteurs construits a partir du corpus cible. Pour ce projet, la traduction c'est faite de deux manières différentes : avec et sans les dictionnaires de cognats.\\
+	Après avoir construit les vecteurs de contexte des termes techniques, il est nécessaire de les traduire. Cette traduction permettra ensuite de les comparer avec d'autres vecteurs construits à partir du corpus cible. Pour ce projet, la traduction s'est faite de deux manières différentes : avec et sans les dictionnaires de cognats.\\
 	
-	Dans la méthode standard, seul le dictionnaire classique est utilisé pour traduire les vecteurs de contextes, mais pour ce projet, il a été décidé d'ajouter des dictionnaires de cognats pour améliorer les résultats. En effet, si un terme présent dans un vecteur de contexte ne peut pas être traduit par le dictionnaire classique, on utilise alors un dictionnaire de cognats pour trouver une traduction alternative. Les résultats obtenus par ces différents procédés seront détaillés dans la partie résultats.\\
+	Dans la méthode standard, seul le dictionnaire classique est utilisé pour traduire les vecteurs de contexte, mais pour ce projet, il a été décidé d'ajouter des dictionnaires de cognats pour améliorer les résultats. En effet, si un terme présent dans un vecteur de contexte ne peut pas être traduit par le dictionnaire classique, on utilise alors un dictionnaire de cognats pour trouver une traduction alternative. Les résultats obtenus par ces différents procédés seront détaillés dans la partie Résultats.\\
 	
-	En ce qui concerne les vecteurs de contexes anglais, la méthode de construction est la même que celle des utilisée pour les termes techniques. Cependant il faut construire un vecteur de contexte pour tous les termes présents dans le corpus cible, car ces vecteurs serviront ensuite d'éléments de comparaison pour les termes à traduire. Il y a environ 7900 vecteurs de contextes et une centaine de termes à traduire.
+	En ce qui concerne les vecteurs de contexes anglais, la méthode de construction est la même que celle utilisée pour les termes techniques. Cependant il faut construire un vecteur de contexte pour tous les termes présents dans le corpus cible, car ces vecteurs serviront ensuite d'éléments de comparaison pour les termes à traduire. Il y a environ 7900 vecteurs de contexte et une centaine de termes à traduire.
 	
 	\subsection{Comparaisons}
 	
-	Lorsque tous les vecteurs de contextes sont construits, il ne suffit plus que de les comparer. Pour cela, on utilise la fonction mesure \textit{cosinus}, qui permet de calculer la similarité entre deux vecteurs. Ainsi, chaque des vecteurs représentant un termes à traduire est comparé avec tous les vecteurs représentant un terme du corpus cible. La fonction \textit{cosinus} retourne ensuite un score pour chaque comparaison : plus la valeur de ce score est grande, et plus les deux vecteurs se ressemble.
+	Lorsque tous les vecteurs de contexte sont construits, il ne suffit plus que de les comparer. Pour cela, on utilise la fonction \textit{cosinus}, qui permet de mesurer la similarité entre deux vecteurs. Ainsi, chacun des vecteurs représentant un terme à traduire est comparé avec tous les vecteurs représentant un terme du corpus cible. La fonction \textit{cosinus} retourne ensuite un score pour chaque comparaison : plus la valeur de ce score est élevée, plus les vecteurs analysés se ressemblent.
 	
 
 \section{Résultats}
