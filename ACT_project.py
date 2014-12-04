@@ -48,16 +48,6 @@ if __name__ == "__main__":
     #         ALGORITHME          #
     ###############################
 
-    #TODO Récupération de la liste de mots à traduire
-
-    #TODO Construction du vecteur contexte pour ces mots (récupérer les 3 mots avants et les 3 mots après)
-    # on compte combien de fois chaque mot apparait
-
-    #TODO Traduction de chaque mot du vecteur de contexte
-    # s'il n'y a qu'une traduction
-
-    #TODO
-
     ###############################
     #   Variables de traitement   #
     ###############################
