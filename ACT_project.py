@@ -31,7 +31,7 @@ from functions import *
 #   Corpus/termer_source.lem                                                                             #
 #   Corpus/termer_target.lem                                                                             #
 #   Dictionary/dicfrenelda-utf8.txt                                                                      #
-#   Other_src/test_list.txt                                                                              #
+#   Other_src/ts.xml                                                                              #
 ##########################################################################################################
 # resultat top 10  40%
 
